@@ -1,0 +1,22 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t cpavlatos/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true cpavlatos/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t cpavlatos/fib-client ./client
+  - docker build -t cpavlatos/fib-nginx ./nginx
+  - docker build -t cpavlatos/fib-server ./server
+  - docker build -t cpavlatos/fib-worker ./worker
+  # push the above created images to docker hub, first login to docker cli
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker push cpavlatos/fib-client
+  - docker push cpavlatos/fib-nginx
+  - docker push cpavlatos/fib-server
+  - docker push cpavlatos/fib-worker
+
