@@ -19,4 +19,16 @@ after_success:
   - docker push cpavlatos/fib-nginx
   - docker push cpavlatos/fib-server
   - docker push cpavlatos/fib-worker
-
+deploy:
+  provider: elasticbeanstalk
+  region: "us-west-1"
+  app: FibonacciCalculator
+  env: Fibonaccicalculator-env
+  bucket_name: elasticbeanstalk-us-west-1-579267201426
+  bucket_path: fib-calc
+  on:
+    branch: master
+  access_key_id: 
+    secure: $AWS_ACCESS_KEY
+  secret_access_key:
+    secure: $AWS_SECRET_KEY
